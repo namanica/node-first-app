@@ -8,9 +8,9 @@ const renderHtml = (res, html) => {
   res.end(html);
 };
 
-const writeOutput = (value) => {
+const writeOutput = (value, callback) => {
   fs.mkdirSync("./outputs", { recursive: true });
-  fs.writeFileSync("./outputs/value.txt", value, { recursive: true });
+  fs.writeFile("./outputs/value.txt", value, { recursive: true }, callback);
 };
 
 const requestListener = (req, res) => {
@@ -31,20 +31,19 @@ const requestListener = (req, res) => {
       body.push(chunk);
     });
 
-    req.on("end", (chunk) => {
+    return req.on("end", (chunk) => {
       console.log("END CHUNK:", chunk);
 
       const parsedBody = Buffer.concat(body).toString();
       console.log("END PARSED BODY:", parsedBody);
 
       const value = parsedBody.split("=")[1];
-      writeOutput(value);
+      writeOutput(value, () => {
+        res.statusCode = 302;
+        res.setHeader("Location", "/");
+        res.end();
+      });
     });
-
-    res.statusCode = 302;
-    res.setHeader("Location", "/");
-
-    return res.end();
   }
 
   renderHtml(res, testHtml);
