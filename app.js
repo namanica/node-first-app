@@ -1,4 +1,5 @@
 const http = require("http");
+const fs = require("fs");
 
 const { testHtml, testFormHtml } = require("./constants");
 
@@ -7,14 +8,43 @@ const renderHtml = (res, html) => {
   res.end(html);
 };
 
-const requestListener = (req, res) => {
-  // console.log("REQUEST:", req);
-  // console.log("RESPONSE:", res);
-  console.log(req.method, req.url);
+const writeOutput = (value) => {
+  fs.mkdirSync("./outputs", { recursive: true });
+  fs.writeFileSync("./outputs/value.txt", value, { recursive: true });
+};
 
-  if (req.url === "/") {
+const requestListener = (req, res) => {
+  const { url, method } = req;
+
+  console.log(method, url);
+
+  if (url === "/") {
     renderHtml(res, testFormHtml);
     return;
+  }
+
+  if (url === "/message" && method === "POST") {
+    const body = [];
+
+    req.on("data", (chunk) => {
+      console.log("CHUNK:", chunk);
+      body.push(chunk);
+    });
+
+    req.on("end", (chunk) => {
+      console.log("END CHUNK:", chunk);
+
+      const parsedBody = Buffer.concat(body).toString();
+      console.log("END PARSED BODY:", parsedBody);
+
+      const value = parsedBody.split("=")[1];
+      writeOutput(value);
+    });
+
+    res.statusCode = 302;
+    res.setHeader("Location", "/");
+
+    return res.end();
   }
 
   renderHtml(res, testHtml);
