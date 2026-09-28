@@ -1,7 +1,12 @@
-const http = require("http");
-const fs = require("fs");
+import * as http from "http";
+import * as fs from "fs";
 
-const { testHtml, testFormHtml } = require("./constants");
+import {
+  TEST_HTML,
+  TEST_FORM_HTML,
+  STATUS_CODES,
+  PORT,
+} from "./constants/index.js";
 
 const renderHtml = (res, html) => {
   res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -19,7 +24,7 @@ const requestListener = (req, res) => {
   console.log(method, url);
 
   if (url === "/") {
-    renderHtml(res, testFormHtml);
+    renderHtml(res, TEST_FORM_HTML);
     return;
   }
 
@@ -39,16 +44,16 @@ const requestListener = (req, res) => {
 
       const value = parsedBody.split("=")[1];
       writeOutput(value, () => {
-        res.statusCode = 302;
+        res.statusCode = STATUS_CODES.FOUND;
         res.setHeader("Location", "/");
         res.end();
       });
     });
   }
 
-  renderHtml(res, testHtml);
+  renderHtml(res, TEST_HTML);
 };
 
 const server = http.createServer(requestListener);
 
-server.listen(3000);
+server.listen(PORT);

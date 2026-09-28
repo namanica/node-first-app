@@ -1,4 +1,4 @@
-const testHtml = `
+export const TEST_HTML = `
 <!DOCTYPE html>
 <html>
 <head><title>Header Test</title></head>
@@ -9,5 +9,3 @@ const testHtml = `
 </body>
 </html>
 `;
-
-module.exports = testHtml;

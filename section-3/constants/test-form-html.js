@@ -1,4 +1,4 @@
-const testFormHtml = `
+export const TEST_FORM_HTML = `
 <html>
 <head><title>Enter Message</title></head>
 <body>
@@ -9,5 +9,3 @@ const testFormHtml = `
 </body>
 </html>
 `;
-
-module.exports = testFormHtml;
