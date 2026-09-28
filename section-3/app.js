@@ -8,10 +8,7 @@ import {
   PORT,
 } from "./constants/index.js";
 
-const renderHtml = (res, html) => {
-  res.setHeader("Content-Type", "text/html; charset=utf-8");
-  res.end(html);
-};
+import { renderHtml } from "./helpers/index.js";
 
 const writeOutput = (value, callback) => {
   fs.mkdirSync("./outputs", { recursive: true });
